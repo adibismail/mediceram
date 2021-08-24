@@ -1,0 +1,22 @@
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is not neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk"] = self["webpackChunk"] || []).push([["/js/hoverable-collapse"],{
+
+/***/ "./resources/js/hoverable-collapse.js":
+/*!********************************************!*\
+  !*** ./resources/js/hoverable-collapse.js ***!
+  \********************************************/
+/***/ (() => {
+
+eval("(function ($) {\n  'use strict'; //Open submenu on hover in compact sidebar mode and horizontal menu mode\n\n  $(document).on('mouseenter mouseleave', '.sidebar .nav-item', function (ev) {\n    var body = $('body');\n    var sidebarIconOnly = body.hasClass(\"sidebar-icon-only\");\n    var sidebarFixed = body.hasClass(\"sidebar-fixed\");\n\n    if (!('ontouchstart' in document.documentElement)) {\n      if (sidebarIconOnly) {\n        if (sidebarFixed) {\n          if (ev.type === 'mouseenter') {\n            body.removeClass('sidebar-icon-only');\n          }\n        } else {\n          var $menuItem = $(this);\n\n          if (ev.type === 'mouseenter') {\n            $menuItem.addClass('hover-open');\n          } else {\n            $menuItem.removeClass('hover-open');\n          }\n        }\n      }\n    }\n  });\n})(jQuery);//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9yZXNvdXJjZXMvanMvaG92ZXJhYmxlLWNvbGxhcHNlLmpzP2FlMmMiXSwibmFtZXMiOlsiJCIsImRvY3VtZW50Iiwib24iLCJldiIsImJvZHkiLCJzaWRlYmFySWNvbk9ubHkiLCJoYXNDbGFzcyIsInNpZGViYXJGaXhlZCIsImRvY3VtZW50RWxlbWVudCIsInR5cGUiLCJyZW1vdmVDbGFzcyIsIiRtZW51SXRlbSIsImFkZENsYXNzIiwialF1ZXJ5Il0sIm1hcHBpbmdzIjoiQUFBQSxDQUFDLFVBQVNBLENBQVQsRUFBWTtBQUNYLGVBRFcsQ0FFWDs7QUFDQUEsRUFBQUEsQ0FBQyxDQUFDQyxRQUFELENBQUQsQ0FBWUMsRUFBWixDQUFlLHVCQUFmLEVBQXdDLG9CQUF4QyxFQUE4RCxVQUFTQyxFQUFULEVBQWE7QUFDekUsUUFBSUMsSUFBSSxHQUFHSixDQUFDLENBQUMsTUFBRCxDQUFaO0FBQ0EsUUFBSUssZUFBZSxHQUFHRCxJQUFJLENBQUNFLFFBQUwsQ0FBYyxtQkFBZCxDQUF0QjtBQUNBLFFBQUlDLFlBQVksR0FBR0gsSUFBSSxDQUFDRSxRQUFMLENBQWMsZUFBZCxDQUFuQjs7QUFDQSxRQUFJLEVBQUUsa0JBQWtCTCxRQUFRLENBQUNPLGVBQTdCLENBQUosRUFBbUQ7QUFDakQsVUFBSUgsZUFBSixFQUFxQjtBQUNuQixZQUFJRSxZQUFKLEVBQWtCO0FBQ2hCLGNBQUlKLEVBQUUsQ0FBQ00sSUFBSCxLQUFZLFlBQWhCLEVBQThCO0FBQzVCTCxZQUFBQSxJQUFJLENBQUNNLFdBQUwsQ0FBaUIsbUJBQWpCO0FBQ0Q7QUFDRixTQUpELE1BSU87QUFDTCxjQUFJQyxTQUFTLEdBQUdYLENBQUMsQ0FBQyxJQUFELENBQWpCOztBQUNBLGNBQUlHLEVBQUUsQ0FBQ00sSUFBSCxLQUFZLFlBQWhCLEVBQThCO0FBQzVCRSxZQUFBQSxTQUFTLENBQUNDLFFBQVYsQ0FBbUIsWUFBbkI7QUFDRCxXQUZELE1BRU87QUFDTEQsWUFBQUEsU0FBUyxDQUFDRCxXQUFWLENBQXNCLFlBQXRCO0FBQ0Q7QUFDRjtBQUNGO0FBQ0Y7QUFDRixHQXBCRDtBQXFCRCxDQXhCRCxFQXdCR0csTUF4QkgiLCJzb3VyY2VzQ29udGVudCI6WyIoZnVuY3Rpb24oJCkge1xuICAndXNlIHN0cmljdCc7XG4gIC8vT3BlbiBzdWJtZW51IG9uIGhvdmVyIGluIGNvbXBhY3Qgc2lkZWJhciBtb2RlIGFuZCBob3Jpem9udGFsIG1lbnUgbW9kZVxuICAkKGRvY3VtZW50KS5vbignbW91c2VlbnRlciBtb3VzZWxlYXZlJywgJy5zaWRlYmFyIC5uYXYtaXRlbScsIGZ1bmN0aW9uKGV2KSB7XG4gICAgdmFyIGJvZHkgPSAkKCdib2R5Jyk7XG4gICAgdmFyIHNpZGViYXJJY29uT25seSA9IGJvZHkuaGFzQ2xhc3MoXCJzaWRlYmFyLWljb24tb25seVwiKTtcbiAgICB2YXIgc2lkZWJhckZpeGVkID0gYm9keS5oYXNDbGFzcyhcInNpZGViYXItZml4ZWRcIik7XG4gICAgaWYgKCEoJ29udG91Y2hzdGFydCcgaW4gZG9jdW1lbnQuZG9jdW1lbnRFbGVtZW50KSkge1xuICAgICAgaWYgKHNpZGViYXJJY29uT25seSkge1xuICAgICAgICBpZiAoc2lkZWJhckZpeGVkKSB7XG4gICAgICAgICAgaWYgKGV2LnR5cGUgPT09ICdtb3VzZWVudGVyJykge1xuICAgICAgICAgICAgYm9keS5yZW1vdmVDbGFzcygnc2lkZWJhci1pY29uLW9ubHknKTtcbiAgICAgICAgICB9XG4gICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgdmFyICRtZW51SXRlbSA9ICQodGhpcyk7XG4gICAgICAgICAgaWYgKGV2LnR5cGUgPT09ICdtb3VzZWVudGVyJykge1xuICAgICAgICAgICAgJG1lbnVJdGVtLmFkZENsYXNzKCdob3Zlci1vcGVuJylcbiAgICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgJG1lbnVJdGVtLnJlbW92ZUNsYXNzKCdob3Zlci1vcGVuJylcbiAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH0pO1xufSkoalF1ZXJ5KTsiXSwiZmlsZSI6Ii4vcmVzb3VyY2VzL2pzL2hvdmVyYWJsZS1jb2xsYXBzZS5qcy5qcyIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./resources/js/hoverable-collapse.js\n");
+
+/***/ })
+
+},
+0,[["./resources/js/hoverable-collapse.js","/js/manifest"]]]);

@@ -1,0 +1,144 @@
+.table-bg {
+    background-color: #191c24!important;
+	background-image: linear-gradient(270deg,rgba(51,148,225,.18),transparent)!important;
+}
+
+.mx-datepicker-range {
+	width: 100%!important;
+}
+
+.v-menu__content {
+	box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12)!important;
+}
+
+.v-picker__title.primary {
+    background: #191c24;
+}
+
+.v-date-picker-table .v-btn.v-btn--active {
+    color: #1e1e1e!important;
+}
+
+.alert.alert-fill-info {
+    color: #ffffff;
+    background-color: #8f5fe8;
+}
+
+a:active, a:hover {
+    text-decoration: none!important;
+}
+
+.export-btn, .export-btn:hover, .export-btn:active {
+    color: white!important;
+}
+
+/* .progressbar-text {
+    top: 0px!important;
+} */
+
+/* Grid or List View */
+.view_item img{
+	width: 75px;
+}
+
+.links{
+	margin-bottom: 25px;
+	padding: 15px;
+	border-radius: 3px;
+}
+
+.links ul{
+	display: flex;
+	justify-content: center;
+}
+
+.links ul li{
+	margin: 0 15px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.links ul li:hover,
+.links ul li.active{
+	color: #4abd3e;
+}
+
+.view_main{
+	border-radius: 3px;
+	padding: 15px;
+}
+
+.list-view .view_item {
+	border: 1px solid #e2efe1;
+	margin: 10px;
+	padding: 10px 20px;
+	display: flex;
+	align-items: center;
+}
+
+.list-view .view_item:last-child{
+	margin-bottom: 0;
+}
+
+.list-view .view_item .vi_left{
+	margin-right: 25px;
+}
+
+.view_item .title{
+	font-weight: 600;
+}
+
+.view_item .content{
+	margin: 5px 0;
+	font-size: 14px;
+	line-height: 22px;
+	font-weight: 200;
+}
+
+.view_item .btn{
+	width: 125px;
+	background: #4abd3e;
+	padding: 8px 5px;
+	border-radius: 3px;
+	color: #fff;
+	text-align: center;
+	font-weight: 200;
+	cursor: pointer;
+}
+
+.view_item .btn:hover{
+	background: #3bd62b;
+}
+
+.grid-view{
+	width: 100%;
+}
+
+.grid-view .view_item {
+	display: inline-block;
+    border: 5px solid #191c24;
+    border-radius: 25px;
+    background: #1d3044;
+    width: 230px;
+    padding: 25px;
+    text-align: center;
+    margin: 10px;
+}
+
+.grid-view .view_item .vi_left{
+	margin-bottom: 10px;
+}
+
+.grid-view .view_item .btn{
+	margin: 0 auto;
+}
+/* Grid or List View END */
+
+
+.progress-bar-striped2 {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent) !important;
+    /* background-size: 1rem 1rem !important;  */
+  }

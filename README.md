@@ -2,11 +2,9 @@
 These are the steps I use for this project
 
 ## Installation Steps
-
+```
 1. Clone repo [https://github.com/adibismail/mediceram] and place in xampp/htdocs folder
 2. Run composer install and npm install 
-```
-
 ```
 2. Run commands
 ```

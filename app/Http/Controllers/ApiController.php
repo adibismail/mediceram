@@ -40,23 +40,25 @@ class ApiController extends Controller
     {
         Log::channel('post_mould_data_logger')->info($request->all());
 
-        // $epc = $request->epc;
-        // $tid = substr($request->tid, 8, 16);
-        // $worker_id = $request->worker_id;
-        // $mould_id = $request->mould_model;
-        // $mould_creation_date = $request->mould_creation_date;
-        // $plaster_moulding_station_id = $request->plaster_moulding_station_id;
-        // $size_of_received_data = sizeof($request->all());
+        $epc = $request->epc;
+        $tid = substr($request->tid, 8, 16);
+        $worker_id = $request->worker_id;
+        $mould_id = $request->mould_model;
+        $mould_creation_date = $request->mould_creation_date;
+        $plaster_moulding_station_id = $request->plaster_moulding_station_id;
+        $size_of_received_data = sizeof($request->all());
 
-        // if (isset($epc) && isset($tid) && isset($worker_id) && isset($mould_id) && isset($mould_creation_date) && isset($plaster_moulding_station_id) && $size_of_received_data == 6) {
-        //     $store_mould_data_msg = $store_mould_data_service->StoreMouldData($epc, $tid, $worker_id, $mould_id, $mould_creation_date, $plaster_moulding_station_id);
+        if (isset($epc) && isset($tid) && isset($worker_id) && 
+            isset($mould_id) && isset($mould_creation_date) 
+            && isset($plaster_moulding_station_id) && $size_of_received_data == 6) {
+            $store_mould_data_msg = $store_mould_data_service->StoreMouldData($epc, $tid, $worker_id, $mould_id, $mould_creation_date, $plaster_moulding_station_id);
 
-        //     return response()->json(["message" => $store_mould_data_msg, "body" => $request->all()], 200);
-        // } else {
-        //     $msg = "Some keys are missing OR extra key(s) found. Please check the data in the body.";
+            return response()->json(["message" => $store_mould_data_msg, "body" => $request->all()], 200);
+        } else {
+            $msg = "Some keys are missing OR extra key(s) found. Please check the data in the body.";
 
-        //     return response()->json(["err_msg" => $msg, "body" => $request->all()], 406);
-        // }
+            return response()->json(["err_msg" => $msg, "body" => $request->all()], 406);
+        }
     }
 
     public function get_workers_data(Request $request, RetrieveWorkersIdWithBidService $retrieve_workers_id_with_bid_service)

@@ -14,4 +14,17 @@ class PlasterMould extends Model
     protected $table = 'plaster_moulds';
 
     protected $fillable = ['created_at', 'epc_tbl_id', 'mould_mdl_tbl_id'];
+
+    /*
+    * Every Plaster Mould has a corresponding EPC used to identify the particular mould
+    */
+    public function epc()
+    {
+        return $this->belongsTo(ElectronicProductCode::class, 'epc_tbl_id', 'epc_tbl_id');
+    }
+
+    public function model()
+    {
+        return $this->belongsTo(MouldModel::class, 'mould_mdl_tbl_id', 'mould_mdl_tbl_id');
+    }
 }

@@ -3,7 +3,11 @@
     "/js/misc.js": "/js/misc.js",
     "/js/hoverable-collapse.js": "/js/hoverable-collapse.js",
     "/js/manifest.js": "/js/manifest.js",
+    "/js/pdfmake.js": "/js/pdfmake.js",
+    "/js/canvg.js": "/js/canvg.js",
+    "/js/xlsx.js": "/js/xlsx.js",
     "/css/app.css": "/css/app.css",
+    "/css/vue-select.css": "/css/vue-select.css",
     "/js/vendor.js": "/js/vendor.js",
     "/css/all.css": "/css/all.css"
 }

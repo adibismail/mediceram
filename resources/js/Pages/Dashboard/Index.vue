@@ -126,18 +126,28 @@
 
             </div>
         </div>
+        <graph :orders="orders" :customers="customers"></graph>
+        <rejection-table :moulds="moulds"></rejection-table>
     </div>
     <!-- content-wrapper ends -->
 </template>
 
 <script>
 import Layout from "@/Shared/Layout";
+import graph from '../OrdersMonitor/View-Station.vue';
+import RejectionTable from '../OrdersMonitor/rejection-table.vue';
 
 export default {
     metaInfo: { title: "Dashboard" },
     layout: Layout,
-    props: ["daily_total_passed", "daily_total_failed", "total_moulds", "recent_fails", "plaster_moulds"],
-    data: () => ({
+    props: ["daily_total_passed", "daily_total_failed", "total_moulds",
+            "recent_fails", "plaster_moulds", "orders", "customers", "moulds"],
+    components: {
+        graph,
+        RejectionTable,
+    },
+    data: () => 
+        RejectionTable({
         dialog: false,
         dialogDelete: false,
         headers: [

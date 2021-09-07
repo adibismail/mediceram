@@ -20,6 +20,7 @@ class StoreFormerDataService
 {
     public function StoreFormerData($epc, $bid, $former_weight, $date_time, $failure_code, $casting_station_id)
     {
+       
         $date = date_create($date_time);
         $date = date_format($date, "Y-m-d");
 
@@ -34,10 +35,10 @@ class StoreFormerDataService
             // raw date_format matches HOUR only
             // 1 epc = 1 mould = max 24 formers everyday (1 hour = 1 former / day)
             $former_exists = Former::where('epc_tbl_id', '=', $epc->epc_tbl_id)
-                ->where(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H")'), '=', Carbon::parse($date_time)->format('Y-m-d H'))
+                ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H")'), '=', Carbon::parse($date_time)->format('Y-m-d H'))
                 ->exists();
 
-            // if first former today & passed
+            // if first time this former is scanned today & passed
             if (!$former_exists && $failure_code == 0) {
                 $former = new Former;
                 $former->former_weight = $former_weight;
@@ -56,6 +57,8 @@ class StoreFormerDataService
                 ->first();
                 $order->increment('done_qty');
 
+                $former->order_tbl_id = $order->order_tbl_id;
+                $former->update();
                 OrderHasFormer::updateOrCreate(
                     [   // always update/create record
                         'order_tbl_id' => $order->order_tbl_id,
@@ -85,7 +88,9 @@ class StoreFormerDataService
                     ->whereRaw('orders.done_qty < orders.order_qty')
                     ->first();
                 $order->increment('failed_qty');
-
+                
+                $former->order_tbl_id = $order->order_tbl_id;
+                $former->update();
                 OrderHasFormer::updateOrCreate(
                     [   // always update/create record
                         'order_tbl_id' => $order->order_tbl_id,
@@ -100,7 +105,7 @@ class StoreFormerDataService
             // if former rescanned today
             else {
                 $former = Former::where('epc_tbl_id', '=',  $epc->epc_tbl_id)
-                    ->where(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H")'), '=', Carbon::parse($date_time)->format('Y-m-d H'))
+                    ->where(DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H")'), '=', Carbon::parse($date_time)->format('Y-m-d H'))
                     ->first();
                 
                 // if now passed & prev passed

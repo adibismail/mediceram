@@ -8,7 +8,9 @@ import VueMeta from "vue-meta";
 import {Ziggy} from './ziggy';
 import route from '../../vendor/tightenco/ziggy/dist';
 import VueMask from 'v-mask';
-
+import vSelect from 'vue-select';
+import JsonExcel from "vue-json-excel";
+ 
 Vue.use(VueAxios, axios);
 Vue.config.productionTip = false;
 Vue.use(plugin);
@@ -16,6 +18,7 @@ Vue.use(VueMeta);
 Vue.use(Vuetify);
 Vue.use(VueMask);
 
+ 
 // local - npm run watch
 // live - npm run production
 
@@ -41,3 +44,8 @@ new Vue({
             }
         })
 }).$mount(el);
+
+
+Vue.component('v-select-graph', vSelect);
+Vue.component("downloadExcel", JsonExcel);
+ 

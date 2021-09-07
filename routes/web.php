@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MouldModelsController;
 use App\Http\Controllers\OrdersMonitorController;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,5 +147,30 @@ Route::get('orders-monitor', [OrdersMonitorController::class, 'index'])
 Route::get('orders-monitor-view-station/{id}', [OrdersMonitorController::class, 'view_station'])
     ->middleware('auth')
     ->name('orders-monitor-view-station');
+
+Route::get('get-former-data/{id}', [OrdersMonitorController::class, 'get_former_data'])
+    ->middleware('auth')
+    ->name('former-data');
+
+Route::get('get-former-data-table/{id}', [OrdersMonitorController::class, 'get_former_data_table'])
+    ->middleware('auth')
+    ->name('former-data-table');
+
+Route::get('get-moulds-for-date', [OrdersMonitorController::class, 'get_moulds_for_date'])
+    ->middleware('auth')
+    ->name('moulds-for-date');
+
+Route::get('get-moulds-for-failure_rate', [OrdersMonitorController::class, 'moulds_for_failure_rate'])
+    ->middleware('auth')
+    ->name('moulds-for-failure_rate');
+
+if (env('APP_DEBUG')){
+    Route::get('test', [TestController::class, 'index'])
+    ->middleware('auth')
+    ->name('test');
+}
+
+
+
 
 require __DIR__.'/auth.php';

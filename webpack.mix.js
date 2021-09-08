@@ -37,6 +37,8 @@ mix
     })
     .vue();
 
+    mix.sass('resources/sass/vue-select/vue-select.scss', 'public/css');
+
 // require('laravel-mix-bundle-analyzer');
 
 // if (mix.isWatching()) {

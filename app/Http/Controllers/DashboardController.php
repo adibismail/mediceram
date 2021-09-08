@@ -6,7 +6,9 @@ use Inertia\Inertia;
 use App\Models\ElectronicProductCode;
 use App\Models\PlasterMould;
 use App\Models\Former;
-
+use App\Models\Order;
+use App\Models\Customer;
+use Illuminate\Support\Carbon;
 class DashboardController extends Controller
 {
     public function __construct()
@@ -46,7 +48,21 @@ class DashboardController extends Controller
             ->take(5)
             ->select('formers.*', 'quality_check_codes.*', 'plaster_moulds.mould_mdl_tbl_id')
             ->get();
-        
+    
+        $orders = Order::with('mould_model')->get();//->groupBy('customer_tbl_id');
+        $customers = Customer::get();
+
+        foreach ($orders as $order){
+            $order->mould_description = $order->mould_model->description;
+        }
+        $orders = $orders->groupBy('customer_tbl_id');
+
+        $date_start = Carbon::now()->subMonths(6);
+        $date_end = Carbon::now();
+        $moulds = PlasterMould::with('epc')->whereBetween('created_at', [$date_start, $date_end])->get();
+        foreach ($moulds as $pm){
+            $pm->epc_title = $pm->epc->epc;
+        }
         return Inertia::render('Dashboard/Index', [
             'plaster_moulds' => $plaster_moulds,
             'daily_total_formers' => $daily_total_formers,
@@ -54,6 +70,9 @@ class DashboardController extends Controller
             'daily_total_failed' => $daily_total_failed,
             'daily_total_passed' => $daily_total_passed,
             'recent_fails' => $recent_fails,
+            'customers' => $customers,
+            'orders' => $orders,
+            'moulds' => $moulds,
         ]);
     }
 	

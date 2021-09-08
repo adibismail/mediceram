@@ -10,9 +10,14 @@ use App\Models\Customer;
 use App\Models\MouldModel;
 use Illuminate\Http\Request;
 use App\Models\CastingStation;
+use App\Models\ElectronicProductCode;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Former;
+use App\Models\PlasterMould;
+use App\Models\QualityCheckCode;
+use Hamcrest\Type\IsObject;
 
 class OrdersMonitorController extends Controller
 {
@@ -22,61 +27,156 @@ class OrdersMonitorController extends Controller
     }
 
     public function index() {
-		$orders = Order::leftjoin('mould_models', 'orders.mould_mdl_tbl_id', '=', 'mould_models.mould_mdl_tbl_id')
-            ->leftjoin('casting_stations', 'orders.cs_tbl_id', '=', 'casting_stations.cs_tbl_id')
-            ->leftjoin('customers', 'orders.customer_tbl_id', '=', 'customers.customer_tbl_id')
-            ->whereRaw('orders.order_qty != orders.done_qty')
-            ->where('status', '1')
-            ->where('orders.prod_date', '<=', Carbon::today())
-            ->get();
-
-		$incomplete_orders = Order::leftjoin('mould_models', 'orders.mould_mdl_tbl_id', '=', 'mould_models.mould_mdl_tbl_id')
-            ->leftjoin('casting_stations', 'orders.cs_tbl_id', '=', 'casting_stations.cs_tbl_id')
-            ->leftjoin('customers', 'orders.customer_tbl_id', '=', 'customers.customer_tbl_id')
-            ->whereRaw('orders.order_qty != orders.done_qty')
-            ->where('status', '1')
-            ->where('orders.prod_date', '<=', Carbon::today())
-            ->get();
-
-        $upcoming_orders = Order::leftjoin('mould_models', 'orders.mould_mdl_tbl_id', '=', 'mould_models.mould_mdl_tbl_id')
-            ->leftjoin('casting_stations', 'orders.cs_tbl_id', '=', 'casting_stations.cs_tbl_id')
-            ->leftjoin('customers', 'orders.customer_tbl_id', '=', 'customers.customer_tbl_id')
-            ->whereRaw('orders.order_qty != orders.done_qty')
-            ->where('status', '1')
-            ->where('orders.prod_date', '>', Carbon::today())
-            ->get();
-
-        $completed_orders = Order::leftjoin('mould_models', 'orders.mould_mdl_tbl_id', '=', 'mould_models.mould_mdl_tbl_id')
-            ->leftjoin('casting_stations', 'orders.cs_tbl_id', '=', 'casting_stations.cs_tbl_id')
-            ->leftjoin('customers', 'orders.customer_tbl_id', '=', 'customers.customer_tbl_id')
-            ->whereRaw('orders.order_qty = orders.done_qty')
-            ->where('status', '1')
-            ->get();
-
+        $orders = Order::with('mould_model')->get();//->groupBy('customer_tbl_id');
         $customers = Customer::get();
 
-        $mould_models = MouldModel::get();
-        
-        $casting_stations = CastingStation::get();
-        
-        return Inertia::render('OrdersMonitor/Index', [
+        foreach ($orders as $order){
+            $order->mould_description = $order->mould_model->description;
+            $order->mould_id = $order->mould_model->mould_mdl_id;
+        }
+        $orders = $orders->groupBy('customer_tbl_id');
+        return Inertia::render('OrdersMonitor/former-table', [
+            'customers' => $customers, 
             'orders' => $orders,
-            'incomplete_orders' => $incomplete_orders,
-            'upcoming_orders' => $upcoming_orders,
-            'completed_orders' => $completed_orders,
-            'customers' => $customers,
-            'mould_models' => $mould_models,
-            'casting_stations' => $casting_stations,
         ]);
+
+
     }
 
     public function view_station($id) {
         $casting_stations = CastingStation::get();
 
         // return Excel::download(new ExportOrders($id), 'order.xlsx');
-        
+        $orders = Order::with('mould_model')->get();//->groupBy('customer_tbl_id');
+        $customers = Customer::get();
+
+        foreach ($orders as $order){
+            $order->mould_description = $order->mould_model->description;
+            $order->mould_id = $order->mould_model->mould_mdl_id;
+        }
+        $orders = $orders->groupBy('customer_tbl_id');
+
+        $epc = ElectronicProductCode::with('plaster')->get();
         return Inertia::render('OrdersMonitor/View-Station', [
             'casting_stations' => $casting_stations,
+            'plaster_moulds' => $epc,
+            'customers' => $customers, 
+            'orders' => $orders,
         ]);
+    }
+
+    public function get_former_data($id){
+        $former_data = Former::where('order_tbl_id', $id)->where('created_at', '>=', Carbon::today())->get();
+        $order = Order::with('mould_model')->find($id);
+        return response()->json([
+            "former_data" => $former_data,
+            "order" => $order
+        ], 200);
+    }
+
+    public function get_former_data_table($id){
+        $former_data = Former::where('order_tbl_id', $id)->get();
+        $order = Order::with('mould_model', 'customer')->find($id);
+
+        foreach ($former_data as $former){
+            if ($order != null){
+                $former->max = $order->fmr_opt_wgt_max;
+                $former->min = $order->fmr_opt_wgt_min;
+            }
+        }
+        return response()->json([
+            "former_data" => $former_data,
+            "order" => $order
+        ], 200);
+    }
+
+    public function get_moulds_for_date(Request $request){
+        $date_start = $request['dates'][0];
+        $date_end = $request['dates'][1];
+        $plaster_moulds = PlasterMould::with('epc')->whereBetween('created_at', [$date_start, $date_end])->get();
+        foreach ($plaster_moulds as $pm){
+            $pm->epc_title = $pm->epc->epc;
+        }
+        return response()->json([
+            "moulds" => $plaster_moulds,
+        ], 200);
+  
+    }
+
+    public function moulds_for_failure_rate(Request $request){
+        $date_start = $request['dates'][0];
+        $date_end = $request['dates'][1];
+        $isConsecutive = $request['isConsecutive'];
+        $numberValue = $request['numberValue'];
+        $plaster_moulds = PlasterMould::with('epc', 'model', 'epc.pms', 'epc.worker')
+                        ->whereBetween('created_at', [$date_start, $date_end])->get();
+        $epcs = $plaster_moulds->pluck('epc_tbl_id');
+        $formers = Former::whereIn('epc_tbl_id', $epcs)->get()->groupBy('epc_tbl_id');
+        $qc_codes = QualityCheckCode::get()->groupBy('qc_code_tbl_id');
+        $failure_array = []; //Array of EPC Table IDs that meet the failure rate
+        $failure_objects = []; //Keep track of consecutive failures and rejection rate for each epc
+        foreach ($formers as $epc => $former_array){
+            $consecutive_count = 0;
+            $highest_consecutive_count = 0;
+            $failure_count = 0;
+            foreach ($former_array as $former){
+                if ($qc_codes[$former->qc_code_tbl_id][0]->qc_code != 0){
+                    $failure_count++;
+                    $consecutive_count++;
+                }else{
+                    if ($consecutive_count > $highest_consecutive_count){
+                        $highest_consecutive_count = $consecutive_count;
+                    }
+                    $consecutive_count = 0;
+                }
+            }
+            if ($consecutive_count > $highest_consecutive_count){
+                $highest_consecutive_count = $consecutive_count;
+            }
+            if (!$isConsecutive){
+                $total_count = count($former_array);
+                $failure_percentage = $failure_count/$total_count*100;
+                if ($failure_percentage >= $numberValue){
+                    array_push($failure_array, $former->epc_tbl_id);
+                    $failure_object = (object)[];
+                    $failure_object->epc = $former->epc_tbl_id;
+                    $failure_object->consecutive = $highest_consecutive_count;
+                    $failure_object->rejection_ratio = $failure_percentage;
+                    $failure_objects[$former->epc_tbl_id] = $failure_object;
+                }
+            }else{
+                $total_count = count($former_array);
+                $failure_percentage = $failure_count/$total_count*100;
+                if ($highest_consecutive_count >= $numberValue){
+                    array_push($failure_array, $former->epc_tbl_id);
+                    $failure_object = (object)[];
+                    $failure_object->epc = $former->epc_tbl_id;
+                    $failure_object->consecutive = $highest_consecutive_count;
+                    $failure_object->rejection_ratio = $failure_percentage;
+                    $failure_objects[$former->epc_tbl_id] = $failure_object;
+                }
+            }
+        }
+
+        $reject_moulds = $plaster_moulds->whereIn('epc_tbl_id', $failure_array);
+        $formers = Former::whereIn('epc_tbl_id', $failure_array)->orderBy('created_at')->get()->groupBy('epc_tbl_id');
+        foreach ($reject_moulds as $mould){
+            $mould->latest_former = ($formers[$mould->epc->epc_tbl_id])->last()->created_at;
+            $mould->rejection_ratio = $failure_objects[$mould->epc->epc_tbl_id]->rejection_ratio;
+            $mould->consecutive = $failure_objects[$mould->epc->epc_tbl_id]->consecutive;
+            $mould->worker = $mould->epc->worker[0];
+        }
+
+        //If $failure_array contains only 1 result it will be an object
+        //Data table requires an array so convert $reject_moulds to an array;
+        $array = [];
+        foreach ($reject_moulds as $key => $value){
+            array_push($array, $value);
+        }
+        return response()->json([
+            "moulds" => $array,
+        ], 200);
+        
+
     }
 }

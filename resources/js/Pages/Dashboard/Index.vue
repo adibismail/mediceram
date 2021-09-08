@@ -78,22 +78,40 @@
                             <h4 class="card-title">Recent Former Failures</h4>
                         </div>
                         <div class="preview-list">
-
-                            <div class="preview-item border-bottom" :items="recent_fails">
+                            <div class="preview-item border-bottom">
                                 <div class="preview-item-content d-flex flex-grow">
+                                   
                                     <div class="flex-grow">
-                                        <div class="d-flex d-md-block d-xl-flex justify-content-between">
-                                            <h6 class="preview-subject">
-                                                Mould ID: e114n
-                                            </h6>
-                                            <p class="text-muted text-small"> {{recent_fails}} </p>
+                                        <v-virtual-scroll
+                                        :bench="benched"
+                                        :items="recent_fails"
+                                        height="250"
+                                        item-height="80"
+                                        >
+                                        <template v-if="recent_fails != 'Empty'" v-slot:default="{ item }">
+                                            <v-list-item :key="item.former_tbl_id" dark>
+                                            <v-list-item-content>
+                                                <v-list-item-title>
+                                                    EPC: <strong>{{ item.epc.epc}}</strong>
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    Creation Time: <strong>{{ item.created_at}}</strong>
+                                                </v-list-item-subtitle>
+                                                <v-list-item-subtitle>
+                                                    Failure Code: <strong>{{ item.qc.qc_name}}</strong>
+                                                </v-list-item-subtitle>
+                                            <hr style="border-top: 1px solid #E0E1E4 !important; margin-top: 6px !important; padding-bottom: 10px;">
+                                            </v-list-item-content>
+                                            </v-list-item>
+                                    
+                                        </template>
+
+                                        <div v-else>
+                                            <span>No failed formers in the past 7 days</span>
                                         </div>
-                                        <p class="text-muted">
-                                            Produced former with failure(s):
-                                            <span class="badge badge-outline-danger">
-                                                {{recent_fails}}
-                                            </span>
-                                        </p>
+
+                                        </v-virtual-scroll>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -146,8 +164,8 @@ export default {
         graph,
         RejectionTable,
     },
-    data: () => 
-        RejectionTable({
+    data: () => ({
+        benched: 0,
         dialog: false,
         dialogDelete: false,
         headers: [

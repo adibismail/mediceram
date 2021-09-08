@@ -19,7 +19,8 @@
                             <div class="count-indicator">
                                 <img
                                     class="img-xs rounded-circle "
-                                    src="images/faces/face15.jpg"
+                                    src="icons/icon-admin.jpg"
+                                    style="background-color: #97A7B8"
                                     alt=""
                                 />
                                 <span class="count bg-success"></span>
@@ -154,7 +155,8 @@
                                 <div class="navbar-profile">
                                     <img
                                         class="img-xs rounded-circle"
-                                        src="images/faces/face15.jpg"
+                                        src="icons/icon-admin.jpg"
+                                        style="background-color: #97A7B8"
                                         alt=""
                                     />
                                     <p

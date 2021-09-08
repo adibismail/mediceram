@@ -109,7 +109,6 @@ class TestController extends Controller
         //     'customers' => $customers,
         //     'orders' => $orders,
         // ]);
-
         $plaster_moulds = PlasterMould::leftjoin('electronic_product_codes', 'plaster_moulds.epc_tbl_id', '=', 'electronic_product_codes.epc_tbl_id')
 		->leftjoin('worker_has_epcs', 'electronic_product_codes.epc_tbl_id', '=', 'worker_has_epcs.epc_tbl_id')
 		->leftjoin('workers', 'worker_has_epcs.worker_tbl_id', '=', 'workers.worker_tbl_id')
@@ -132,16 +131,15 @@ class TestController extends Controller
 
         $daily_total_failed = $daily_total_formers - $daily_total_passed;
 
-        $recent_fails = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
-            ->leftjoin('plaster_moulds', 'formers.epc_tbl_id', '=', 'plaster_moulds.epc_tbl_id')
-            ->leftjoin('quality_check_codes', 'formers.qc_code_tbl_id', '=', 'quality_check_codes.qc_code_tbl_id')
-            ->where('electronic_product_codes.created_at', '=', '2021-01-15')
-            ->where('quality_check_codes.qc_code', '!=', '0') // 0 = passed former
-            //->orderBy('device', 'asc')
-            ->take(5)
-            ->select('formers.*', 'quality_check_codes.*', 'plaster_moulds.mould_mdl_tbl_id')
-            ->get();
-    
+        $recent_fails = Former::where('created_at', '>=', Carbon::today()->subDays(7))
+        ->with('epc', 'epc.plaster', 'qc')
+        ->whereHas('qc', function ($query) {
+            return $query->where('qc_code', '!=', 0);
+        })->get();
+
+        if (!count($recent_fails))
+            $recent_fails = ["Empty"];
+
         $orders = Order::with('mould_model')->get();//->groupBy('customer_tbl_id');
         $customers = Customer::get();
 
@@ -149,7 +147,13 @@ class TestController extends Controller
             $order->mould_description = $order->mould_model->description;
         }
         $orders = $orders->groupBy('customer_tbl_id');
-    
+
+        $date_start = Carbon::now()->subMonths(6);
+        $date_end = Carbon::now();
+        $moulds = PlasterMould::with('epc')->whereBetween('created_at', [$date_start, $date_end])->get();
+        foreach ($moulds as $pm){
+            $pm->epc_title = $pm->epc->epc;
+        }
         return Inertia::render('Orders/test', [
             'plaster_moulds' => $plaster_moulds,
             'daily_total_formers' => $daily_total_formers,
@@ -159,6 +163,7 @@ class TestController extends Controller
             'recent_fails' => $recent_fails,
             'customers' => $customers,
             'orders' => $orders,
+            'moulds' => $moulds,
         ]);
 
     }

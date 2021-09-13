@@ -39,16 +39,15 @@ class DashboardController extends Controller
 
         $daily_total_failed = $daily_total_formers - $daily_total_passed;
 
-        $recent_fails = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
-            ->leftjoin('plaster_moulds', 'formers.epc_tbl_id', '=', 'plaster_moulds.epc_tbl_id')
-            ->leftjoin('quality_check_codes', 'formers.qc_code_tbl_id', '=', 'quality_check_codes.qc_code_tbl_id')
-            ->where('electronic_product_codes.created_at', '=', '2021-01-15')
-            ->where('quality_check_codes.qc_code', '!=', '0') // 0 = passed former
-            //->orderBy('device', 'asc')
-            ->take(5)
-            ->select('formers.*', 'quality_check_codes.*', 'plaster_moulds.mould_mdl_tbl_id')
-            ->get();
-    
+        $recent_fails = Former::where('created_at', '>=', Carbon::today()->subDays(7))
+        ->with('epc', 'epc.plaster', 'qc')
+        ->whereHas('qc', function ($query) {
+            return $query->where('qc_code', '!=', 0);
+        })->get();
+
+        if (!count($recent_fails))
+            $recent_fails = ["Empty"];
+
         $orders = Order::with('mould_model')->get();//->groupBy('customer_tbl_id');
         $customers = Customer::get();
 
@@ -63,7 +62,7 @@ class DashboardController extends Controller
         foreach ($moulds as $pm){
             $pm->epc_title = $pm->epc->epc;
         }
-        return Inertia::render('Dashboard/Index', [
+        return Inertia::render('Dashboard/Carousel-Index', [
             'plaster_moulds' => $plaster_moulds,
             'daily_total_formers' => $daily_total_formers,
             'total_moulds' => $total_moulds,

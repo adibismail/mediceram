@@ -1,5 +1,5 @@
 <template>
-    <div class="row ">
+    <div class="row">
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-body">
@@ -19,8 +19,10 @@
                                 </div>
                             </template>
                         </v-select-graph>
+                        <span style="color: white;">{{ label }}: </span>
                         <v-col cols="12" sm="6" md="1">
                             <v-text-field
+                                :label="label"
                                 v-model="numberValue"
                                 :rules ="[rules.max, rules.min]"
                                 single-line
@@ -84,6 +86,7 @@
 
                     <!-- items= {DATA} -->
                     <v-data-table dark
+                        height="43vh"
                         :headers="headers"
                         :items="rejected_moulds"
                         :items-per-page="5"
@@ -138,7 +141,7 @@
 import Layout from "@/Shared/Layout";
 
 export default {
-    metaInfo: { title: "Rejection Table" },
+    //metaInfo: { title: "Rejection Table" },
     layout: Layout,
     props: ["moulds"],
     mounted() {
@@ -179,9 +182,14 @@ export default {
     }),
     computed: {
         dateRangeText () {
-            console.log(this.dates);
             return this.dates.join(' ~ ')
         },
+        label (){
+            if (this.isConsecutive)
+                return "Consecutive Failures";
+            else    
+                return "Rejection Ratio";
+        }
     },
     watch: {
 
@@ -205,13 +213,6 @@ export default {
             })
         },
         search(){
-            // console.log('searched');
-            // console.log(this.numberValue);
-            // console.log(this.dates);
-            // console.log(this.mould_select);
-            // console.log(this.isConsecutive);
-            // console.log(this.customers);
-            // console.log(this.plaster_moulds);
             this.loading = false;
             this.axios.get(this.route('moulds-for-failure_rate',
                 {dates: this.dates,
@@ -219,7 +220,6 @@ export default {
                 mould: this.mould_select,
                 isConsecutive: this.isConsecutive,
             })).then((response) => {
-                console.log(response);
                 this.rejected_moulds = response.data.moulds;
             }).catch(function (error) {
                 console.log(error);

@@ -8,12 +8,12 @@
                             <div class="card-body">
                                 <h4 class="card-title">Today's Former Data</h4>
                                     <div class="row" style="margin: 8px; padding-left: 15px; align-items: center">
-                                        <span style="padding-right: 15px">Select Customer: </span>
+                                        <span style="color: white; padding-right: 15px">Select Customer: </span>
                                         <v-select-graph label="customer_id" @input="onSelectCust" :options="this.customers" :clearable="false"></v-select-graph>
-                                        <span style="padding-left: 15px; padding-right: 15px">Select Mould Type: </span>
+                                        <span style="color: white; padding-left: 15px; padding-right: 15px">Select Mould Type: </span>
                                         <v-select-graph label="mould_description" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
                                     </div>
-                                <div style="height: 500px;" id="chartdiv"></div>
+                                <div style="height: 60vh;" id="chartdiv"></div>
                             </div>
                         </div>
                     </div>
@@ -32,6 +32,7 @@
   color: #394066;
   text-transform: lowercase;
   font-variant: small-caps;
+  width: 300px;
 }
 
 .style-chooser .vs__clear,
@@ -39,8 +40,13 @@
   fill: #394066;
 }
 
+/*
+Padding-left 0 because vuetify css adds 24px of padding to ul tags which include the dropdown menu
+*/
 .vs__dropdown-menu {
   background:#1B2634;
+  width: 300px;
+  padding-left: 0px !important;
 }
 
 /* List Items */
@@ -66,7 +72,7 @@ import am4themes_dark from "@amcharts/amcharts4/themes/dark";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 export default {
-    metaInfo: { title: "Orders Monitor" },
+    //metaInfo: { title: "Orders Monitor" },
     layout: Layout,
     components: {},
     props: ["casting_stations", "plaster_moulds", "customers", "orders"],

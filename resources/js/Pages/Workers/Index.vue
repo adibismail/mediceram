@@ -274,26 +274,29 @@ export default {
 
                 //check if it's saving the same beacon ids
                 //only assigning another beacon/unassigning beacon will make the post request
-                // if (this.editedItem.beacon_id != this.editedItem.new_beacon_id) {
-                //     this.$inertia.post(this.route('workers-update'), this.editedItem, {
-                //         onSuccess: () => {
-                //             // Handle success event
-                //             this.close();
-                //         },
-                //         onError: (errors) => {
-                //             // Handle validation errors
-                //             $('.remove-error').css('display', 'block');
-                //         },
-                //     })
-                // }
+                if (this.editedItem.beacon_id != this.editedItem.new_beacon_id) {
+                    this.$inertia.post(this.route('workers-update'), this.editedItem, {
+                        onSuccess: () => {
+                            // Handle success event
+                            this.close();
+                        },
+                        onError: (errors) => {
+                            // Handle validation errors
+                            $('.remove-error').css('display', 'block');
+                        },
+                    })
+                }
             } else {
                 this.editedItem.beacon_id = this.selectedBeacon;
                 this.editedItem.dprt_name = this.selectedDepartment.dprt_name ? this.selectedDepartment.dprt_name.dprt_name : "";
                 this.editedItem.dprt_tbl_id = this.selectedDepartment.dprt_name ? this.selectedDepartment.dprt_name.dprt_tbl_id : "";
+                console.log(this.editedItem)
+                console.log(this.selectedDepartment)
 
                 this.$inertia.post(this.route('workers-store'), this.editedItem, {
                     onSuccess: () => {
                         // Handle success event
+                        console.log("Success");
                         this.close();
                     },
                     onError: (errors) => {

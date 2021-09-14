@@ -104,7 +104,10 @@ class WorkersController extends Controller
                 return Redirect::route('workers')->with('success_msg', 'Worker created.');
             } catch (\Exception $e) {
                 DB::rollback();
-                //Log::channel('post_workers_data_logger')->info($e);
+                Log::channel('post_workers_data_logger')->info($e);
+                // return Redirect::route('workers')
+                // ->with('err_msg', 'Worker could not be created.');
+         
             }
         // if not assigning beacon, then just add new worker
         } else if (is_null($request->beacon_id)) {
@@ -131,7 +134,10 @@ class WorkersController extends Controller
                 return Redirect::route('workers')->with('success_msg', 'Worker created.');
             } catch (\Exception $e) {
                 DB::rollback();
-                //Log::channel('post_workers_data_logger')->info($e);
+                // return Redirect::route('workers')
+                // ->with('err_msg', 'Worker could not be created.');
+         
+                Log::channel('post_workers_data_logger')->info($e);
             }
         }
     }

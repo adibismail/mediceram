@@ -27,11 +27,22 @@ class StoreFormerDataService
         DB::beginTransaction();
         try {
             $epc = ElectronicProductCode::firstWhere('epc', strtoupper($epc));
+            if ($epc === null)
+                return array("err_msg", "No corresponding EPC found");
+
             $plaster_mould = PlasterMould::firstWhere('epc_tbl_id', $epc->epc_tbl_id);
             $beacon = Beacon::firstWhere('beacon_id', strtolower($bid));
             $qc_code = QualityCheckCode::firstWhere('qc_code', $failure_code);
             $casting_station = CastingStation::firstWhere('casting_station_id', $casting_station_id);
-
+            
+            if ($plaster_mould === null)
+                return array("err_msg", "No corresponding plaster mould found");
+            if ($beacon === null)
+                return array("err_msg", "No corresponding beacon found");
+            if ($qc_code === null)
+                return array("err_msg", "No corresponding qc code found");
+            if ($casting_station === null)
+                return array("err_msg", "No corresponding casting station found");
             // raw date_format matches HOUR only
             // 1 epc = 1 mould = max 24 formers everyday (1 hour = 1 former / day)
             $former_exists = Former::where('epc_tbl_id', '=', $epc->epc_tbl_id)
@@ -55,8 +66,12 @@ class StoreFormerDataService
                     ->where('orders.mould_mdl_tbl_id', '=', $plaster_mould->mould_mdl_tbl_id)
                     ->whereRaw('orders.done_qty < orders.order_qty')
                 ->first();
+                if ($order === null)
+                return array("err_msg", "No corresponding order found");
+
                 $order->increment('done_qty');
 
+               
                 $former->order_tbl_id = $order->order_tbl_id;
                 $former->update();
                 OrderHasFormer::updateOrCreate(
@@ -87,8 +102,12 @@ class StoreFormerDataService
                     ->where('orders.mould_mdl_tbl_id', '=', $plaster_mould->mould_mdl_tbl_id)
                     ->whereRaw('orders.done_qty < orders.order_qty')
                     ->first();
+                if ($order === null)
+                    return array("err_msg", "No corresponding order found");
+
                 $order->increment('failed_qty');
                 
+             
                 $former->order_tbl_id = $order->order_tbl_id;
                 $former->update();
                 OrderHasFormer::updateOrCreate(
@@ -123,6 +142,9 @@ class StoreFormerDataService
                         ->where('orders.mould_mdl_tbl_id', '=', $plaster_mould->mould_mdl_tbl_id)
                         ->whereRaw('orders.done_qty < orders.order_qty')
                         ->first();
+                    if ($order === null)
+                        return array("err_msg", "No corresponding order found");
+    
                 }
 
                 // if now passed & prev failed
@@ -139,6 +161,9 @@ class StoreFormerDataService
                         ->where('orders.mould_mdl_tbl_id', '=', $plaster_mould->mould_mdl_tbl_id)
                         ->whereRaw('orders.done_qty < orders.order_qty')
                         ->first();
+                    if ($order === null)
+                        return array("err_msg", "No corresponding order found");
+    
 
                     $order->increment('done_qty');
                     $order->decrement('failed_qty');
@@ -158,6 +183,9 @@ class StoreFormerDataService
                         ->where('orders.mould_mdl_tbl_id', '=', $plaster_mould->mould_mdl_tbl_id)
                         ->whereRaw('orders.done_qty < orders.order_qty')
                         ->first();
+                    if ($order === null)
+                        return array("err_msg", "No corresponding order found");
+    
 
                     $order->decrement('done_qty');
                     $order->increment('failed_qty');

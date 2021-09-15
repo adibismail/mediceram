@@ -11,7 +11,6 @@ class RetrieveWorkersIdWithBidService
     {
         $workers_id_arr = [];
         $bids = json_decode($bid);
-
         foreach ($bids as $bid) {
             $beacon = Beacon::firstWhere('beacon_id', $bid);
 

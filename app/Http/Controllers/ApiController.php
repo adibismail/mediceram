@@ -65,7 +65,6 @@ class ApiController extends Controller
     {
         Log::channel('get_worker_data_logger')->info($request->all());
         $bid = $request->bid;
-
         // validate if epc & casting_station_id are in the GET parameters
         if ($bid) {
             $workers_id_list = $retrieve_workers_id_with_bid_service->RetrieveWorkersIdWithBid($bid);

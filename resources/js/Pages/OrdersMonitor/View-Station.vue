@@ -213,6 +213,8 @@ export default {
                 { "type": "print", "label": "Print" }
             ]
         }];    
+        
+        this.chart.preloader.disabled = false;
     },
     data: () => ({
         chart: "",
@@ -261,7 +263,9 @@ export default {
             })
 
             if (data.former_data.length === 0){
-                this.label.text = "No data available";
+                this.label.text = "..."
+                setTimeout(() => {this.label.text = "No data available"}, 1000);
+                //this.label.text = "No data available";
                 this.range.value = 0;
                 this.range.label.text = "";
                 this.range2.value = 0;

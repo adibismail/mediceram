@@ -30,6 +30,7 @@
                             :headers="headers"
                             :items="formers"
                             :items-per-page="5"
+                            :loading="isLoadingTable"
                             class="elevation-1 table-bg"
                         ></v-data-table>
                     </div>
@@ -120,7 +121,8 @@ export default {
             },
           ],
         ],
-        file_name: "former_data.csv"
+        file_name: "former_data.csv",
+        isLoadingTable: false, //Indicator does not show because table is not wrapped in v-app
     }),
     computed: {
     },
@@ -136,12 +138,17 @@ export default {
             this.cust_select = this.orders[value.customer_tbl_id];
         },
         onSelectMould(value) {
-            this.axios.get(this.route('former-data-table', value.order_tbl_id)).then((response) => {
-              this.formers = response.data.former_data;
-              this.file_name = response.data.order.customer.customer_id + "-" + response.data.order.mould_model.description + ".csv";
-            }).catch(function (error) {
-                console.log(error);
-            })
+          this.isLoadingTable = true;
+          console.log("loading");
+          this.axios.get(this.route('former-data-table', value.order_tbl_id)).then((response) => {
+            this.formers = response.data.former_data;
+            this.file_name = response.data.order.customer.customer_id + "-" + response.data.order.mould_model.description + ".csv";
+            this.isLoadingTable = false;
+          }).catch(function (error) {
+              console.log(error);
+              this.isLoadingTable = false;
+          })
+      
 
         },
     }

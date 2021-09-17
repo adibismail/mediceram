@@ -51,21 +51,29 @@
                                                                 <v-container>
                                                                     <v-row>
                                                                         <v-col cols="12" sm="12" md="12">
-                                                                            <v-text-field v-model="editedItem.worker_id" label="Worker ID" @keydown.space.prevent>
+                                                                            <v-text-field v-model="editedItem.worker_id" 
+                                                                            label="Worker ID" 
+                                                                            @keydown.space.prevent
+                                                                            :disabled="disabled">
                                                                             </v-text-field>
                                                                             <div class="text-danger remove-error" v-if="errors.worker_id">*{{errors.worker_id}}</div>
                                                                         </v-col>
                                                                     </v-row>
                                                                     <v-row>
                                                                         <v-col cols="12" sm="12" md="12">
-                                                                            <v-text-field v-model="editedItem.worker_name" label="Worker Name">
+                                                                            <v-text-field v-model="editedItem.worker_name" label="Worker Name" :disabled="disabled">
                                                                             </v-text-field>
                                                                             <div class="text-danger remove-error" v-if="errors.worker_name">*{{errors.worker_name}}</div>
                                                                         </v-col>
                                                                     </v-row>
                                                                     <v-row>
                                                                         <v-col cols="12" sm="12" md="12">
-                                                                            <v-select v-model="selectedDepartment.dprt_name" :items="departments" item-text="dprt_name" label="Assign Department" persistent-hint return-object single-line></v-select>
+                                                                            <v-select v-model="selectedDepartment.dprt_name" 
+                                                                            :items="departments" 
+                                                                            item-text="dprt_name" 
+                                                                            label="Assign Department"
+                                                                            :disabled="disabled"
+                                                                            persistent-hint return-object single-line></v-select>
                                                                             <div class="text-danger remove-error" v-if="errors.dprt_tbl_id">*{{errors.dprt_tbl_id}}</div>
 
                                                                             <!-- <v-select v-model="selectedDepartment.dprt_name" :items="departments"item-text="dprt_name" menu-props="auto" label="Assign Department" hide-details single-line></v-select>
@@ -204,6 +212,7 @@ export default {
         selectedDepartment: [],
         selectedBeacon: '',
         availBeacons: [],
+        disabled: "false",
     }),
     computed: {
         formTitle() {
@@ -230,6 +239,7 @@ export default {
             this.editedIndex = this.active_workers.indexOf(item);
             this.editedItem = Object.assign({}, item);
             this.editedItem.new_beacon_id = this.selectedBeacon;
+            this.disabled = true,
             this.dialog = true;
             $('.remove-error').css('display', 'none');
         },
@@ -244,6 +254,7 @@ export default {
             this.closeDelete();
         },
         close() {
+            this.disabled = false,
             this.dialog = false;
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem);

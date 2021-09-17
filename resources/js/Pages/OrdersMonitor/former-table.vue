@@ -10,12 +10,12 @@
                             <span style="padding-right: 15px">Select Customer: </span>
                             <v-select-graph label="customer_id" @input="onSelectCust" :options="this.customers" :clearable="false"></v-select-graph>
                             <span style="padding-left: 15px; padding-right: 15px">Select Mould Type: </span>
-                            <v-select-graph label="mould_description" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
+                            <v-select-graph label="mould_id" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
 
                             <div style="display: flex; justify-content: flex-end; flex-grow: 4;">
                               <download-excel style=""
                                 class="btn btn-success btn-fw"
-                                :data="formers"
+                                :data="formers_export"
                                 :fields="json_fields"
                                 worksheet="My Worksheet"
                                 :name="file_name"
@@ -95,7 +95,9 @@ export default {
             sortable: false,
             value: 'former_tbl_id',
             },
-            { text: 'Weight', value: 'former_weight' },
+            { text: 'Status', value: 'status' },
+            // { text: 'Weight', value: 'former_weight' },
+            // { text: 'QC Name', value: 'qc_name' },
             { text: 'Created At', value: 'created_at' },
             { text: 'Max Weight', value: 'max' },
             { text: 'Min Weight', value: 'min' },
@@ -104,11 +106,12 @@ export default {
             // { text: 'Beacon', value: 'beacon_tbl_id' },
             // { text: 'Order', value: 'order_tbl_id' },
         ],
-        formers: [
-        ],
+        formers: [],
+        formers_export: [],
         json_fields: {
           "ID": "former_tbl_id",
           Weight: "former_weight",
+          //"QC Name": "qc_name",
           "Created At": "created_at",
           "Max Weight": 'max',
           "Min Weight": 'min',
@@ -142,7 +145,8 @@ export default {
           console.log("loading");
           this.axios.get(this.route('former-data-table', value.order_tbl_id)).then((response) => {
             this.formers = response.data.former_data;
-            this.file_name = response.data.order.customer.customer_id + "-" + response.data.order.mould_model.description + ".csv";
+            this.formers_export = response.data.former_data_export;
+            this.file_name = response.data.order.customer.customer_id + "-" + response.data.order.mould_model.mould_mdl_id + ".csv";
             this.isLoadingTable = false;
           }).catch(function (error) {
               console.log(error);

@@ -20,7 +20,7 @@ class RetrieveWorkersListService
         //Justin Requested the logic be changed from retrieving all workers with beacons to retrieving all workers in the demoulded department
         $workers = WorkerHasDepartment::leftjoin('workers', 'worker_has_department.worker_tbl_id', '=', 'workers.worker_tbl_id')
         ->leftjoin('departments', 'worker_has_department.dprt_tbl_id', '=', 'departments.dprt_tbl_id')
-        ->where('departments.dprt_name', '=', "Demoulder")
+        ->where('departments.dprt_name', '=', "Mould Maker")
         ->where('workers.status', '=', 1)
         ->select('workers.*', 'departments.dprt_name')
         ->get();

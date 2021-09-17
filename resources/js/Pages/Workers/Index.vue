@@ -275,6 +275,9 @@ export default {
                 //check if it's saving the same beacon ids
                 //only assigning another beacon/unassigning beacon will make the post request
                 if (this.editedItem.beacon_id != this.editedItem.new_beacon_id) {
+
+                    console.log("Beacon Reassigned")
+
                     this.$inertia.post(this.route('workers-update'), this.editedItem, {
                         onSuccess: () => {
                             // Handle success event

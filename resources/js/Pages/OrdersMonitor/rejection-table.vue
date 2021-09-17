@@ -90,6 +90,7 @@
                         :headers="headers"
                         :items="rejected_moulds"
                         :items-per-page="5"
+                        :loading="isLoadingTable"
                         class="elevation-1 table-bg"
                     ></v-data-table>
                 </div>
@@ -179,6 +180,7 @@ export default {
         menu: false,
         isConsecutive: true,
         loading: false,
+        isLoadingTable: false,
     }),
     computed: {
         dateRangeText () {
@@ -214,6 +216,8 @@ export default {
         },
         search(){
             this.loading = false;
+            this.isLoadingTable = true;
+            console.log('loading')
             this.axios.get(this.route('moulds-for-failure_rate',
                 {dates: this.dates,
                 numberValue: this.numberValue,
@@ -221,9 +225,12 @@ export default {
                 isConsecutive: this.isConsecutive,
             })).then((response) => {
                 this.rejected_moulds = response.data.moulds;
+                this.isLoadingTable = false;
             }).catch(function (error) {
                 console.log(error);
+                this.isLoadingTable = false;
             })
+         
         },
 
         saveDate(){

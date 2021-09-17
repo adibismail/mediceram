@@ -33,7 +33,7 @@ class ExportOrders implements FromCollection, WithHeadings
             ->leftjoin('formers', 'order_has_formers.former_tbl_id', '=', 'formers.former_tbl_id')
             ->selectRaw('formers.created_at, formers.former_weight, orders.fmr_opt_wgt_min, orders.fmr_opt_wgt_max')
             ->where('orders.order_tbl_id', $this->id)
-            ->where('formers.qc_code_tbl_id', '16')
+            ->where('formers.qc_code_tbl_id', '1')
             ->get();
         
         return $export_order;

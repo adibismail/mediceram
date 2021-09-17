@@ -21,6 +21,8 @@ class StoreMouldDataService
         DB::beginTransaction();
         try {
             $plaster_moulding_station = PlasterMouldingStation::firstWhere('plaster_moulding_station_id', $plaster_moulding_station_id);
+            if ($plaster_moulding_station === null)
+                return array("err_msg", "Could not find plaster moulding station with id: ".$plaster_moulding_station_id);
 
             $tid_exists_same_date = ElectronicProductCode::where('tid', '=', $tid)->whereDate('created_at', '=', $date)->first();
             

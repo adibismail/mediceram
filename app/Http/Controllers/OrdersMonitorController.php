@@ -66,7 +66,10 @@ class OrdersMonitorController extends Controller
     }
 
     public function get_former_data($id){
-        $former_data = Former::where('order_tbl_id', $id)->where('created_at', '>=', Carbon::today())->get();
+        $former_data = Former::where('order_tbl_id', $id)
+        ->where('created_at', '>=', Carbon::today())
+        ->where('former_weight', '!=', '-1.00')
+        ->get();
         $order = Order::with('mould_model')->find($id);
         return response()->json([
             "former_data" => $former_data,
@@ -75,17 +78,48 @@ class OrdersMonitorController extends Controller
     }
 
     public function get_former_data_table($id){
-        $former_data = Former::where('order_tbl_id', $id)->get();
+        $former_data = Former::where('order_tbl_id', $id)
+        ->with('qc')
+        ->get();
+        
+        $former_data_export = Former::where('order_tbl_id', $id)
+        ->where('former_weight', '!=', '-1.00')
+        ->with('qc')
+        ->get();
         $order = Order::with('mould_model', 'customer')->find($id);
 
         foreach ($former_data as $former){
             if ($order != null){
                 $former->max = $order->fmr_opt_wgt_max;
                 $former->min = $order->fmr_opt_wgt_min;
+                $former->qc_name = $former->qc->qc_name;
+
+                switch ($former->qc->qc_code) {
+                    case 0:
+                        $former->status = "Pass";
+                        break;
+                    case 5:
+                        $former->status = "Overweight: ".$former->former_weight." kg";
+                        break;
+                    case 6:
+                        $former->status = "Underweight: ".$former->former_weight." kg";
+                        break;
+                    default:
+                        $former->status = "Visual Failure Type";
+                } 
+
+            }
+        }
+        foreach ($former_data_export as $former){
+            if ($order != null){
+                $former->max = $order->fmr_opt_wgt_max;
+                $former->min = $order->fmr_opt_wgt_min;
+                $former->qc_name = $former->qc->qc_name;
             }
         }
         return response()->json([
             "former_data" => $former_data,
+            "former_data_export" => $former_data_export,
             "order" => $order
         ], 200);
     }
@@ -104,8 +138,9 @@ class OrdersMonitorController extends Controller
     }
 
     public function moulds_for_failure_rate(Request $request){
-        $date_start = $request['dates'][0];
-        $date_end = $request['dates'][1];
+        $date_start = new Carbon("2021-03-17");
+        $date_end = new Carbon("2021-09-18");
+        $date_end = $date_end->addDays(1)->subSecond(1);
         $isConsecutive = $request['isConsecutive'];
         $numberValue = $request['numberValue'];
         $plaster_moulds = PlasterMould::with('epc', 'model', 'epc.pms', 'epc.worker')

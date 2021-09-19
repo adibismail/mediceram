@@ -28,14 +28,14 @@ class DashboardController extends Controller
         ->count();
 
         $daily_total_formers = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
-                ->where('electronic_product_codes.created_at', '=', '2021-01-15')
-                ->count();
+        ->whereDate('formers.created_at', '=', Carbon::today())
+        ->count();
 
         $daily_total_passed = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
-            ->leftjoin('quality_check_codes', 'formers.qc_code_tbl_id', '=', 'quality_check_codes.qc_code_tbl_id')
-            ->where('electronic_product_codes.created_at', '=', '2021-01-15')
-            ->where('quality_check_codes.qc_code', '=', '0') // 0 = passed former
-            ->count();
+        ->leftjoin('quality_check_codes', 'formers.qc_code_tbl_id', '=', 'quality_check_codes.qc_code_tbl_id')
+        ->whereDate('formers.created_at', '=', Carbon::today())
+        ->where('quality_check_codes.qc_code', '=', '0') // 0 = passed former
+        ->count();
 
         $daily_total_failed = $daily_total_formers - $daily_total_passed;
 
@@ -53,6 +53,7 @@ class DashboardController extends Controller
 
         foreach ($orders as $order){
             $order->mould_description = $order->mould_model->description;
+            $order->mould_id = $order->mould_model->mould_mdl_id;
         }
         $orders = $orders->groupBy('customer_tbl_id');
 

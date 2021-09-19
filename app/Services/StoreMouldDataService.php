@@ -13,7 +13,7 @@ use App\Models\PlasterMouldingStationAttendance;
 
 class StoreMouldDataService
 {
-    public function StoreMouldData($epc, $tid, $worker_id, $mould_id, $mould_creation_date, $plaster_moulding_station_id)
+    public function StoreMouldData($epc, $tid, $worker_id, $mould_id, $mould_creation_date, $plaster_moulding_station_id, $init_weight)
     {
         $date = date_create($mould_creation_date);
         $date = date_format($date, "Y-m-d");
@@ -53,6 +53,7 @@ class StoreMouldDataService
             $plaster_mould_tbl->epc_tbl_id = $epc_tbl->epc_tbl_id;
             $plaster_mould_tbl->created_at = $mould_creation_date;
             $plaster_mould_tbl->mould_mdl_tbl_id = $mould_id;
+            $plaster_mould_tbl->init_weight = $init_weight;
             $plaster_mould_tbl->save();
 
             $worker_has_epc_tbl = new WorkerHasEpc;

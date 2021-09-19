@@ -11,7 +11,7 @@
                                         <span style="color: white; padding-right: 15px">Select Customer: </span>
                                         <v-select-graph label="customer_id" @input="onSelectCust" :options="this.customers" :clearable="false"></v-select-graph>
                                         <span style="color: white; padding-left: 15px; padding-right: 15px">Select Mould Type: </span>
-                                        <v-select-graph label="mould_description" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
+                                        <v-select-graph label="mould_id" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
                                     </div>
                                 <div style="height: 60vh;" id="chartdiv"></div>
                             </div>
@@ -144,7 +144,7 @@ export default {
         this.range.label.text = "";
         this.range.label.fill = this.range.grid.stroke;
         this.range.label.align = "right";
-        this.range.label.verticalCenter = "bottom";
+        this.range.label.verticalCenter = "top";
 
         //Average Range
         this.range3 = valueAxis.axisRanges.create();
@@ -155,8 +155,8 @@ export default {
         this.range3.label.inside = true;
         this.range3.label.text = "";
         this.range3.label.fill = this.range3.grid.stroke;
-        this.range3.label.align = "right";
-        this.range3.label.verticalCenter = "bottom";
+        this.range3.label.align = "center";
+        this.range3.label.verticalCenter = "top";
 
         //Min Range
         this.range2 = valueAxis.axisRanges.create();
@@ -167,10 +167,8 @@ export default {
         this.range2.label.inside = true;
         this.range2.label.text = "";
         this.range2.label.fill = this.range2.grid.stroke;
-        this.range2.label.align = "right";
-        this.range2.label.verticalCenter = "bottom";
-
-     
+        this.range2.label.align = "left";
+        this.range2.label.verticalCenter = "top";
 
         // Zoom
         this.chart.cursor = new am4charts.XYCursor();
@@ -241,6 +239,7 @@ export default {
         onSelectCust(value) {
             this.disabled = false;
             this.cust_select = this.orders[value.customer_tbl_id];
+            console.log(this.cust_select);
         },
         onSelectMould(value) {
             clearInterval(this.polling)
@@ -274,7 +273,7 @@ export default {
                 this.range3.label.text = "";
             }
             else{
-                avg_weight = avg_weight/(data.former_data.length);
+                avg_weight = (avg_weight/(data.former_data.length)).toFixed(2);
                 this.label.text = "";
                 this.range.value = data.order.fmr_opt_wgt_max;
                 this.range2.value = data.order.fmr_opt_wgt_min;
@@ -285,8 +284,8 @@ export default {
             }
             if (JSON.stringify(this.chart.data) !== JSON.stringify(array)){
                 this.chart.data = array;
-                this.series.name = data.order.mould_model.description;
-                this.axisTitle.text = "Mould Type: " + data.order.mould_model.description;
+                this.series.name = data.order.mould_model.mould_mdl_id;
+                this.axisTitle.text = "Mould Type: " + data.order.mould_model.mould_mdl_id;
             }
         },
         pollData (value) {

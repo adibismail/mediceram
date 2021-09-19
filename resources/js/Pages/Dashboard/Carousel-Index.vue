@@ -113,7 +113,7 @@
                                                 </template>
 
                                                 <div v-else>
-                                                    <span>No failed formers in the past 7 days</span>
+                                                    <span style="color: white">No failed formers in the past 7 days</span>
                                                 </div>
 
                                                 </v-virtual-scroll>

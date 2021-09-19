@@ -13,7 +13,7 @@ class PlasterMould extends Model
     
     protected $table = 'plaster_moulds';
 
-    protected $fillable = ['created_at', 'epc_tbl_id', 'mould_mdl_tbl_id'];
+    protected $fillable = ['created_at', 'epc_tbl_id', 'mould_mdl_tbl_id', 'init_weight'];
 
     /*
     * Every Plaster Mould has a corresponding EPC used to identify the particular mould

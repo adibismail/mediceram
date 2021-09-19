@@ -162,7 +162,7 @@ export default {
             sortable: false,
             value: 'epc.epc',
             },
-            { text: 'Mould Type', value: 'model.description' },
+            { text: 'Mould Type', value: 'model.mould_mdl_id' },
             { text: 'Plaster Moulding Station', value: 'epc.pms.plaster_moulding_station_id' },
             { text: 'Worker ID', value: 'worker.worker_id'},
             { text: 'Rejection Ratio', value: 'rejection_ratio' },

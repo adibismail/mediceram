@@ -105,7 +105,7 @@ class OrdersMonitorController extends Controller
                         $former->status = "Underweight: ".$former->former_weight." kg";
                         break;
                     default:
-                        $former->status = "Visual Failure Type";
+                        $former->status = $former->qc->qc_name;
                 } 
 
             }

@@ -11,7 +11,13 @@
                                         <span style="color: white; padding-right: 15px">Select Customer: </span>
                                         <v-select-graph label="customer_id" @input="onSelectCust" :options="this.customers" :clearable="false"></v-select-graph>
                                         <span style="color: white; padding-left: 15px; padding-right: 15px">Select Mould Type: </span>
-                                        <v-select-graph label="mould_id" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
+                                        <v-select-graph label="mould_id" 
+                                            @option:selected="onSelectMould" 
+                                            :disabled="disabled" 
+                                            :options="this.cust_select" 
+                                            :resetOnOptionsChange="true"
+                                            :clearable="false">
+                                        </v-select-graph>
                                     </div>
                                 <div style="height: 60vh;" id="chartdiv"></div>
                             </div>
@@ -98,7 +104,7 @@ export default {
         "count": 1
         };
         var valueAxis = this.chart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.title.text = "Weight (kg)";
+        valueAxis.title.text = "Weight (g)";
         
         // Create series object if multiple series are required
         // for(var item in this.devices) {                
@@ -120,7 +126,7 @@ export default {
         this['series'].dataFields.dateX = "date";
         this['series'].strokeWidth = 2;
         this['series'].minBulletDistance = 10;
-        this['series'].tooltipText = "{" + "weight" + "} kg\n";
+        this['series'].tooltipText = "{" + "weight" + "} g\n";
         this['series'].tooltip.pointerOrientation = "vertical";
         this['circleBullet'] = this['series'].bullets.push(new am4charts.CircleBullet());
         
@@ -278,9 +284,9 @@ export default {
                 this.range.value = data.order.fmr_opt_wgt_max;
                 this.range2.value = data.order.fmr_opt_wgt_min;
                 this.range3.value = avg_weight;
-                this.range.label.text = "Maximum Optimum Weight (" + data.order.fmr_opt_wgt_max + "kg)";
-                this.range2.label.text = "Minimum Optimum Weight (" + data.order.fmr_opt_wgt_min + "kg)";
-                this.range3.label.text = "Average Weight (" + avg_weight + "kg)";
+                this.range.label.text = "Maximum Optimum Weight (" + data.order.fmr_opt_wgt_max + "g)";
+                this.range2.label.text = "Minimum Optimum Weight (" + data.order.fmr_opt_wgt_min + "g)";
+                this.range3.label.text = "Average Weight (" + avg_weight + "g)";
             }
             if (JSON.stringify(this.chart.data) !== JSON.stringify(array)){
                 this.chart.data = array;

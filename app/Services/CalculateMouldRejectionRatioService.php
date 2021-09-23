@@ -25,8 +25,10 @@ class CalculateMouldRejectionRatioService
         if ($epc_total_formers != 0 && $epc_total_passed != 0) {
             $mould_rejection_ratio = 1 - ($epc_total_passed / $epc_total_formers);
             $mould_rejection_ratio = round($mould_rejection_ratio * 100, 2) . '%';
-        } else {
+        } else if ($epc_total_formers === 0){
             $mould_rejection_ratio = "0%";
+        } else{
+            $mould_rejection_ratio = "100%";
         }
 
         return $mould_rejection_ratio;

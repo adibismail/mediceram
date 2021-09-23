@@ -22,9 +22,9 @@
                                     <div class="card-body">
                                         <h4 class="card-title">Incomplete Orders</h4>
 
-                                        <div class="alert alert-fill-info" role="alert">
+                                        <!-- <div class="alert alert-fill-info" role="alert">
                                             <i class="mdi mdi-alert-circle"></i> On-going orders will not be able to delete, it is advised to edit the 'Order Quantity' in order to terminate the order. 
-                                        </div>
+                                        </div> -->
                                         
                                         <div class="alert alert-success" v-if="$page.props.flash.success_msg">
                                             {{ $page.props.flash.success_msg }}
@@ -35,17 +35,11 @@
                                         
                                         <v-data-table dark :headers="headers_incomplete" :items="incomplete_orders" sort-by="prod_date" caption="" class="elevation-1 table-bg">
                                             
-                                            <template v-slot:item.order_tbl_id="{ item }">
+                                            <!-- <template v-slot:item.order_tbl_id="{ item }">
                                                 <v-btn rounded class="btn btn-outline-info btn-icon-text" dark @click="exportExcel(item.order_tbl_id)">
                                                     Export
-                                                    <!-- <inertia-link class="nav-link" :href="route('orders')">
-
-                                                    <inertia-link class="export-btn" :href="route('orders-export')">
-                                                        Export
-                                                    </inertia-link> -->
-                                                    <!-- {{ item.order_tbl_id }} -->
                                                 </v-btn>
-                                            </template>
+                                            </template> -->
                                             
                                             <template v-slot:top>
                                                 <v-toolbar flat class="table-bg">
@@ -135,7 +129,7 @@
                                                     <v-dialog v-model="dialogDelete" max-width="500px">
                                                         <v-card>
                                                             <v-card-title class="headline">
-                                                                Are you sure you want to archive this order?
+                                                                Are you sure you want to delete this order?
                                                             </v-card-title>
                                                             <v-card-actions>
                                                                 <v-spacer></v-spacer>
@@ -163,17 +157,18 @@
                                                         </template>
                                                         <span>Edit Order</span>
                                                     </v-tooltip>
-                                                    <v-tooltip bottom>
-                                                        <template v-slot:activator="{ on, attrs }">
-                                                            <span v-bind="attrs" v-on="on">
-                                                                <v-icon small @click="deleteItem(item)">
-                                                                    mdi-delete
-                                                                </v-icon>
-                                                            </span>
-                                                        </template>
-                                                        <span>Delete Order</span>
-                                                    </v-tooltip>
                                                 </template>
+                                                <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <span v-bind="attrs" v-on="on">
+                                                            <v-icon small @click="deleteItem(item)">
+                                                                mdi-delete
+                                                            </v-icon>
+                                                        </span>
+                                                    </template>
+                                                    <span>Delete Order</span>
+                                                </v-tooltip>
+                                                
 
                                             </template>
                                         </v-data-table>
@@ -356,6 +351,7 @@ export default {
         dialogDelete: false,
         dialogDelete2: false,
         headers_incomplete: [
+            { text: "Table ID", value: "order_tbl_id" },
             { text: "Production Date", value: "prod_date" },
             { text: "Customer ID", value: "customer_id" },
             { text: "Mould Model ID", value: "mould_mdl_id" },
@@ -364,7 +360,7 @@ export default {
             { text: "Maximum Weight(g)xxx", value: "fmr_opt_wgt_max" },
             { text: "Order Quantity", value: "order_qty" },
             { text: "Done Quantity", value: "done_qty" },
-            { text: "Export Excel", value: "order_tbl_id" },
+            // { text: "Export Excel", value: "order_tbl_id" },
             { text: "Actions", value: "actions", sortable: false }
         ],
         headers_upcoming: [
@@ -427,10 +423,11 @@ export default {
         // this.initialize();
     },
     methods: {
-        exportExcel(id) {
-            window.open(this.route('orders-export', id))
-            // window.open(this.route('orders-export') + '/' + id)
-        },
+        //Disabled exportExcel, left the code commented incase it is required in the future
+        // exportExcel(id) {
+        //     window.open(this.route('orders-export', id))
+        //     // window.open(this.route('orders-export') + '/' + id)
+        // },
         editItem(item) {
             this.selectedCustomer.customer_id = item.customer_id;
             this.selectedCustomer.customer_tbl_id = item.customer_tbl_id;

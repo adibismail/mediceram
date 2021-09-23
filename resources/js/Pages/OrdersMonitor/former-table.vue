@@ -1,4 +1,5 @@
 <template>
+<v-app>
     <div class="content-wrapper" data-app>
         <div class="row ">
             <div class="col-12 grid-margin">
@@ -7,10 +8,10 @@
                         <h4 class="card-title">Former Data</h4>
 
                         <div class="row" style="margin: 8px; padding-left: 15px; align-items: center">
-                            <span style="padding-right: 15px">Select Customer: </span>
+                            <span style="padding-right: 15px; color: white;">Select Customer: </span>
                             <v-select-graph label="customer_id" @input="onSelectCust" :options="this.customers" :clearable="false"></v-select-graph>
-                            <span style="padding-left: 15px; padding-right: 15px">Select Mould Type: </span>
-                            <v-select-graph label="mould_id" @input="onSelectMould" :disabled="disabled" :options="this.cust_select" :clearable="false"></v-select-graph>
+                            <span style="padding-left: 15px; padding-right: 15px; color: white;">Select Mould Type: </span>
+                            <v-select-graph label="mould_id" @option:selected="onSelectMould" :disabled="disabled" :options="this.cust_select" :resetOnOptionsChange="true" :clearable="false"></v-select-graph>
 
                             <div style="display: flex; justify-content: flex-end; flex-grow: 4;">
                               <download-excel style=""
@@ -39,6 +40,7 @@
         </div>
     </div>
     <!-- content-wrapper ends -->
+</v-app>
 </template>
 
 <style>
@@ -57,9 +59,15 @@
   fill: #394066;
 }
 
+/*
+Padding-left 0 because vuetify css adds 24px of padding to ul tags which include the dropdown menu
+*/
 .vs__dropdown-menu {
   background:#1B2634;
+  width: 300px;
+  padding-left: 0px !important;
 }
+
 
 /* List Items */
 .vs__dropdown-option {
@@ -139,6 +147,7 @@ export default {
       onSelectCust(value) {
             this.disabled = false;
             this.cust_select = this.orders[value.customer_tbl_id];
+            console.log(this.orders);
         },
         onSelectMould(value) {
           this.isLoadingTable = true;

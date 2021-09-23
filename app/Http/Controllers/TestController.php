@@ -15,22 +15,30 @@ class TestController extends Controller
     //
     public function index() {
 
-        $daily_total_formers = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
-                ->whereDate('formers.created_at', '=', Carbon::today())
-                ->count();
-
-        $daily_total_passed = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
-            ->leftjoin('quality_check_codes', 'formers.qc_code_tbl_id', '=', 'quality_check_codes.qc_code_tbl_id')
-            ->whereDate('formers.created_at', '=', Carbon::today())
-            ->where('quality_check_codes.qc_code', '=', '0') // 0 = passed former
+        $epc = "4D0020210923000000000006";
+            // get total number of formers
+            $epc_total_formers = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
+            ->where('electronic_product_codes.epc', '=', $epc)
             ->count();
-
-        $daily_total_failed = $daily_total_formers - $daily_total_passed;
-
-        return response()->json([
-            "dtf" => $daily_total_formers,
-            "dtp" => $daily_total_passed,
-            "dtfa" => $daily_total_failed,
-        ], 200);
+   
+           // get total number of formers passed
+           $epc_total_passed = ElectronicProductCode::leftjoin('formers', 'electronic_product_codes.epc_tbl_id', '=', 'formers.epc_tbl_id')
+               ->leftjoin('quality_check_codes', 'formers.qc_code_tbl_id', '=', 'quality_check_codes.qc_code_tbl_id')
+               ->where('electronic_product_codes.epc', '=', $epc)
+               ->get();
+            //    ->where('quality_check_codes.qc_code', '=', 0) // 0 = passed former
+            //    ->count();
+   
+               return $epc_total_passed;
+           // calculate mould rejection ratio
+           // this condition is to avoid division by zero error
+           if ($epc_total_formers != 0 && $epc_total_passed != 0) {
+               $mould_rejection_ratio = 1 - ($epc_total_passed / $epc_total_formers);
+               $mould_rejection_ratio = round($mould_rejection_ratio * 100, 2) . '%';
+           } else {
+               $mould_rejection_ratio = "0%";
+           }
+   
+           return $mould_rejection_ratio;
     }
 }

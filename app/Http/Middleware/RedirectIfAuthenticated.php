@@ -25,7 +25,7 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 //return Inertia::render('Dashboard/Carousel-Index');
-                return route('dashboard');
+                return redirect()->route('dashboard');
             }
         }
 

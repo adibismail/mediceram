@@ -121,6 +121,19 @@ class OrdersController extends Controller
         return Redirect::route('orders')->with('success_msg', 'Order deleted.');
     }
 
+    public function complete(Request $request) {
+        //Log::channel('post_orders_data_logger')->info($request->all());
+        
+        $order = Order::where('order_tbl_id', $request->order_tbl_id)->get()->first();
+        $done_qty = $order->done_qty;
+        $order->update([
+            'order_qty' => $done_qty,
+        ]);
+
+        return Redirect::route('orders')->with('success_msg', 'Order marked as complete.');
+    }
+
+
     public function export($id) {
         return Excel::download(new ExportOrders($id), 'order.xlsx');
     }

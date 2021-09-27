@@ -143,6 +143,23 @@
                                                             </v-card-actions>
                                                         </v-card>
                                                     </v-dialog>
+                                                     <v-dialog v-model="dialogMarkComplete" max-width="480px">
+                                                        <v-card>
+                                                            <v-card-title class="headline">
+                                                                Are you sure you want to mark this order as complete?
+                                                            </v-card-title>
+                                                            <v-card-actions>
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn color="blue darken-1" text @click="closeMarkComplete">
+                                                                    Cancel
+                                                                </v-btn>
+                                                                <v-btn color="blue darken-1" text  @click="markCompleteConfirm">
+                                                                    OK
+                                                                </v-btn>
+                                                                <v-spacer></v-spacer>
+                                                            </v-card-actions>
+                                                        </v-card>
+                                                    </v-dialog>
                                                 </v-toolbar>
                                             </template>
                                             <template v-slot:item.actions="{ item }">
@@ -168,6 +185,17 @@
                                                     </template>
                                                     <span>Delete Order</span>
                                                 </v-tooltip>
+                                                <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <span v-bind="attrs" v-on="on">
+                                                            <v-icon small @click="markComplete(item)">
+                                                                mdi-check
+                                                            </v-icon>
+                                                        </span>
+                                                    </template>
+                                                    <span>Mark as complete</span>
+                                                </v-tooltip>
+                                                
                                                 
 
                                             </template>
@@ -344,6 +372,7 @@ export default {
         //console.log(this.mould_models);
     },
     data: () => ({
+        dialogMarkComplete: false,
         dialog: false,
         dialog2: false,
         datepickerMenu: false,
@@ -417,7 +446,10 @@ export default {
         },
         dialogDelete2(val) {
             val || this.closeDelete();
-        }
+        },
+        dialogMarkComplete(val){
+           val || this.closeMarkComplete();
+        },
     },
     created() {
         // this.initialize();
@@ -428,6 +460,25 @@ export default {
         //     window.open(this.route('orders-export', id))
         //     // window.open(this.route('orders-export') + '/' + id)
         // },
+        markComplete(item){
+            this.editedIndex = this.incomplete_orders.indexOf(item);
+            this.editedItem = Object.assign({}, item);
+            this.dialogMarkComplete = true;
+        },
+        closeMarkComplete(){
+            this.dialogMarkComplete = false;
+            this.$nextTick(() => {
+                this.editedItem = Object.assign({}, this.defaultItem);
+                this.editedIndex = -1;
+            });
+        },
+        markCompleteConfirm(){
+            this.$inertia.post(this.route('orders-complete'), this.editedItem);
+            let complete_order = this.incomplete_orders[this.editedIndex];
+            this.incomplete_orders.splice(this.editedIndex, 1);
+            this.completed_orders.push(complete_order);
+            this.closeMarkComplete();
+        },
         editItem(item) {
             this.selectedCustomer.customer_id = item.customer_id;
             this.selectedCustomer.customer_tbl_id = item.customer_tbl_id;

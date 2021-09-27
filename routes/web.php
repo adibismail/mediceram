@@ -133,6 +133,10 @@ Route::post('orders-delete', [OrdersController::class, 'delete'])
     ->middleware('auth')
     ->name('orders-delete');
 
+Route::post('orders-complete', [OrdersController::class, 'complete'])
+    ->middleware('auth')
+    ->name('orders-complete');
+
 Route::get('orders-export/{id}', [OrdersController::class, 'export'])
     ->middleware('auth')
     ->name('orders-export');

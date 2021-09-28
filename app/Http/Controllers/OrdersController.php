@@ -10,6 +10,8 @@ use App\Models\Customer;
 use App\Models\MouldModel;
 use Illuminate\Http\Request;
 use App\Models\CastingStation;
+use App\Models\Former;
+use App\Models\OrderHasFormer;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
@@ -111,11 +113,26 @@ class OrdersController extends Controller
     public function delete(Request $request) {
         //Log::channel('post_orders_data_logger')->info($request->all());
         
-        Order::where('order_tbl_id', $request->order_tbl_id)
-            ->update(['status' => 0]);
+        OrderHasFormer::where('order_tbl_id', $request->order_tbl_id)->delete();
+        Former::where('order_tbl_id', $request->order_tbl_id)->delete();
+        Order::where('order_tbl_id', $request->order_tbl_id)->delete();
+            //->update(['status' => 0]);
 
         return Redirect::route('orders')->with('success_msg', 'Order deleted.');
     }
+
+    public function complete(Request $request) {
+        //Log::channel('post_orders_data_logger')->info($request->all());
+        
+        $order = Order::where('order_tbl_id', $request->order_tbl_id)->get()->first();
+        $done_qty = $order->done_qty;
+        $order->update([
+            'order_qty' => $done_qty,
+        ]);
+
+        return Redirect::route('orders')->with('success_msg', 'Order marked as complete.');
+    }
+
 
     public function export($id) {
         return Excel::download(new ExportOrders($id), 'order.xlsx');

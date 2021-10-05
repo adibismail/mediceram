@@ -135,7 +135,7 @@
                                 height="45vh"
                                 :headers="headers" 
                                 :items="plaster_moulds" 
-                                sort-by="epc" 
+                                sort-by="created_at" 
                                 class="elevation-1 table-bg">
                                     <template v-slot:top>
                                            <v-spacer></v-spacer>
